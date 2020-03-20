@@ -17,12 +17,12 @@
        window.location.reload(true);
     }
 
-
+    // Thanks to https://github.com/pomber/covid19
     fetch("https://pomber.github.io/covid19/timeseries.json")
     .then(response => response.json())
     .then(data => render( data ) );
 
-
+    // Activate the selectlist navigation
     function loadCountry(){
       var selectBox = document.getElementById("theCountries");
       var theValue = selectBox.options[selectBox.selectedIndex].value;
@@ -31,13 +31,11 @@
    }
 
     function render( data ){
-
       // put the countries in alphabetical order
       Object.keys(data).sort().forEach(function(key) {
         theData[key] = data[key];
       });
-
-      // Add options to the drop down navigation
+      // Add countries to the drop down navigation
       Object.keys(theData).forEach(function (key) {
           var selectedState = '';
           if (theCountry == key){ selectedState = " selected"; }
@@ -54,6 +52,7 @@
       let recent = [0,0,0,0,0];  // 5 most recent case counts
       let chartEnabled = false; // we will enable this later
 
+       // iterate through data
       theData[theCountry].forEach(({ date, confirmed, recovered, deaths }) => {
 
          // Note: I have not yet used the "recovered" or "deaths" data
@@ -152,9 +151,10 @@
       });
     }
 
-    // In Excel you can use the slope() function, which takes ranges
-    // In JavaScript we do this instead.
-    /* https://stackoverflow.com/questions/43109305/calculate-slope-and-intercept-value-for-logarithmic-trendline-as-excel */
+    // getSlope() calculates the slope for our log trendline
+    // It's similar to Excel where you can send a range to the slope() function
+    // See also: https://stackoverflow.com/questions/43109305/calculate-slope-and-intercept-value-for-logarithmic-trendline-as-excel 
+    // would love to get someone to review/verify the math here.
     function getSlope(X, Y){
       var Slope;
       var Intercept;
@@ -172,8 +172,6 @@
       Intercept = (SY - (Slope * SX)) / N;
       return Slope;
     }
-
-
   </script>
 </head>
 <body>
@@ -182,9 +180,6 @@
   </select>
 </div>
 <canvas id="myChart" width="400" height="150"></canvas>
-<script>
-
-</script>
 <footer style="color: #666; font-size: 0.8em; font-family: sans-serif; text-align: center; padding: 20px;">
 Novel Coronavirus (COVID-19) Cases, provided by <a href="https://systems.jhu.edu/research/public-health/ncov/">JHU CSSE</a>. JSON Timeseries by <a href="https://github.com/pomber/covid19">pomber</a>. Charts made with <a href="https://www.chartjs.org/">Chart.js</a></footer>
 </body>
